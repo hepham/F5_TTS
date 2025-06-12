@@ -1,0 +1,22 @@
+Django==4.2.7
+djangorestframework==3.14.0
+django-cors-headers==4.3.1
+drf-yasg==1.21.7
+# PyTorch with CUDA will be installed separately via install_pytorch.bat
+# torch==2.4.0+cu124
+# torchaudio==2.4.0+cu124
+soundfile>=0.12.1
+cached-path>=1.5.0
+transformers>=4.30.0
+# f5-tts  # Skip f5-tts installation to avoid dependency conflicts
+click>=8.0.0
+uvicorn>=0.20.0
+# Additional F5-TTS dependencies (only essential ones)
+matplotlib>=3.5.0
+tqdm>=4.60.0
+huggingface-hub>=0.16.0
+pydub>=0.25.1
+vocos>=0.0.3
+safetensors>=0.3.0
+pillow>=8.0.0 
+f5-tts

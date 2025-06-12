@@ -1,0 +1,90 @@
+# Ruff configuration for Django F5-TTS project
+line-length = 120
+target-version = "py310"
+
+# Enable specific rule categories
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # Pyflakes
+    "I",  # isort
+    "N",  # pep8-naming
+    "D",  # pydocstyle
+    "UP", # pyupgrade
+    "B",  # flake8-bugbear
+    "C4", # flake8-comprehensions
+    "DJ", # flake8-django
+    "PIE", # flake8-pie
+    "T20", # flake8-print
+    "Q",  # flake8-quotes
+    "RET", # flake8-return
+    "SIM", # flake8-simplify
+    "ERA", # eradicate
+]
+
+# Ignore specific rules
+ignore = [
+    "D100", # Missing docstring in public module
+    "D101", # Missing docstring in public class
+    "D102", # Missing docstring in public method
+    "D103", # Missing docstring in public function
+    "D104", # Missing docstring in public package
+    "D105", # Missing docstring in magic method
+    "D106", # Missing docstring in public nested class
+    "D107", # Missing docstring in __init__
+    "D203", # 1 blank line required before class docstring
+    "D213", # Multi-line docstring summary should start at the second line
+    "DJ001", # Avoid using `null=True` on string-based fields
+    "T201", # print statements (useful for debugging)
+    "ERA001", # Found commented-out code
+]
+
+# Exclude directories and files
+exclude = [
+    ".git",
+    ".venv",
+    "venv",
+    "env",
+    "__pycache__",
+    "migrations",
+    "*.pyc",
+    "node_modules",
+    "static",
+    "media",
+    "benchmark_outputs",
+    "test_outputs",
+]
+
+[lint]
+# Only ignore variables with names starting with "_"
+dummy-variable-rgx = "^_.*$"
+
+# Allow unused variables when they are prefixed with "_"
+ignore-init-module-imports = true
+
+[lint.isort]
+force-single-line = true
+lines-after-imports = 2
+known-django = ["django"]
+known-first-party = ["django_f5tts", "tts_api"]
+section-order = ["future", "standard-library", "third-party", "django", "first-party", "local-folder"]
+
+[lint.pydocstyle]
+convention = "google"
+
+[lint.flake8-django]
+django-settings-module = "tts_api.settings"
+
+[lint.per-file-ignores]
+# Django settings file
+"*/settings.py" = ["F405", "F401"]
+# Test files
+"test_*.py" = ["D", "S101"]
+"**/tests.py" = ["D", "S101"]
+"**/test_*.py" = ["D", "S101"]
+# Migration files
+"*/migrations/*.py" = ["D", "N806", "N802"]
+# __init__.py files
+"__init__.py" = ["D104"]
+# Gradio interface file
+"infer_gradio.py" = ["T201", "D"]
