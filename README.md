@@ -28,12 +28,30 @@ A Django REST API for F5-TTS (Flow Matching Text-to-Speech) and E2-TTS (Embarras
    cd F5-TTS/Django
    ```
 
-2. **Install dependencies**:
+2. **Create and activate virtual environment**:
    ```bash
-   pip install -r requirements.txt
+   # Create virtual environment
+   python -m venv venv
+   
+   # Activate virtual environment
+   # On Windows:
+   venv\Scripts\activate
+   # On macOS/Linux:
+   source venv/bin/activate
    ```
 
-3. **Start the server**:
+3. **Install the project in editable mode**:
+   ```bash
+   pip install -e .
+   ```
+
+   This will automatically install all dependencies defined in `pyproject.toml`, including:
+   - Django and Django REST Framework
+   - F5-TTS and related ML libraries
+   - API documentation tools (drf-yasg)
+   - All required audio processing libraries
+
+4. **Start the server**:
    ```bash
    python start_server.py
    ```
@@ -44,7 +62,7 @@ A Django REST API for F5-TTS (Flow Matching Text-to-Speech) and E2-TTS (Embarras
    python manage.py runserver 0.0.0.0:8000
    ```
 
-4. **Access the API**:
+5. **Access the API**:
    - API Documentation: http://localhost:8000/api/docs/
    - Health Check: http://localhost:8000/api/tts/health/
    - Models List: http://localhost:8000/api/tts/models/
@@ -91,7 +109,8 @@ Generate speech from text using reference audio for voice cloning.
 **Request (multipart/form-data):**
 - `ref_audio` (file, required): Reference audio file (WAV, MP3, etc.)
 - `text` (string, required): Text to convert to speech
-- `model` (string, optional): Model to use ("F5-TTS", "E2-TTS", "Custom"). Default: "F5-TTS"
+- `model` (string, optional): Model to use ("F5-TTS", "E2-TTS", "Auto", "Custom"). Default: "F5-TTS"
+- `language` (string, optional): Language code for TTS generation ("en", "zh", "es", "fr", "it", "ja", "ru", "hi", "fi"). Default: "en"
 - `ref_text` (string, optional): Reference text (auto-transcribed if not provided)
 - `remove_silence` (boolean, optional): Remove silences from output. Default: false
 - `cross_fade_duration` (float, optional): Cross-fade duration in seconds. Default: 0.15
@@ -112,6 +131,27 @@ Generate speech from text using reference audio for voice cloning.
 
 The `audio_data` field contains base64-encoded WAV audio data.
 
+## Supported Languages
+
+The API supports multiple languages with dedicated TTS models:
+
+| Language Code | Language | Example Text |
+|---------------|----------|--------------|
+| `en` | English | "Hello, this is a test of the F5-TTS API!" |
+| `zh` | Chinese | "你好，这是中文语言模型的测试。" |
+| `es` | Spanish | "Hola, esta es una prueba del modelo de idioma español." |
+| `fr` | French | "Bonjour, ceci est un test du modèle de langue française." |
+| `it` | Italian | "Ciao, questo è un test del modello di lingua italiana." |
+| `ja` | Japanese | "こんにちは、これは日本語言語モデルのテストです。" |
+| `ru` | Russian | "Привет, это тест модели русского языка." |
+| `hi` | Hindi | "नमस्ते, यह हिंदी भाषा मॉडल का परीक्षण है।" |
+| `fi` | Finnish | "Hei, tämä on suomen kielen mallin testi." |
+
+**Usage Tips:**
+- Use `model: "Auto"` to automatically select the best model for the specified language
+- Each language uses optimized models for better quality and pronunciation
+- The `language` parameter helps the system choose appropriate models and processing
+
 ## Usage Examples
 
 ### Python Example
@@ -126,6 +166,7 @@ files = {'ref_audio': open('reference_audio.wav', 'rb')}
 data = {
     'text': 'Hello, this is a test of the F5-TTS API!',
     'model': 'F5-TTS',
+    'language': 'en',  # Language code: en, zh, es, fr, it, ja, ru, hi, fi
     'remove_silence': False,
     'speed': 1.0
 }
@@ -153,6 +194,7 @@ curl -X POST "http://localhost:8000/api/tts/generate/" \
      -F "ref_audio=@reference_audio.wav" \
      -F "text=Hello, this is a test of the F5-TTS API!" \
      -F "model=F5-TTS" \
+     -F "language=en" \
      -F "speed=1.0"
 ```
 
@@ -163,6 +205,7 @@ const formData = new FormData();
 formData.append('ref_audio', audioFile); // File object
 formData.append('text', 'Hello, this is a test!');
 formData.append('model', 'F5-TTS');
+formData.append('language', 'en'); // Language code: en, zh, es, fr, it, ja, ru, hi, fi
 
 fetch('http://localhost:8000/api/tts/generate/', {
     method: 'POST',

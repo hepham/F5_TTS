@@ -15,12 +15,14 @@ classifiers = [
     "Framework :: Django",
     "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
     "Topic :: Multimedia :: Sound/Audio :: Speech",
+    
 ]
 requires-python = ">=3.10"
 dependencies = [
     "django>=4.2.0",
     "djangorestframework>=3.14.0",
     "django-cors-headers>=4.0.0",
+    "drf-yasg>=1.21.0",
     "f5-tts>=0.2.1",
     "torch>=2.0.0",
     "torchaudio>=2.0.0",
